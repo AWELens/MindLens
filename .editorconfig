@@ -1,0 +1,61 @@
+# EditorConfig is awesome: https://editorconfig.org
+
+# Root of the file, preventing EditorConfig from searching up the file tree for a .editorconfig file
+root = true
+
+# Default settings for all files
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_spaces = true
+trim_trailing_whitespace = true
+max_line_length = 100
+quote_type = double
+
+# TypeScript files
+[*.ts]
+indent_size = 2
+quote_type = double
+typescript_tsdk = node_modules/typescript/lib
+
+# JavaScript files
+[*.js]
+indent_size = 2
+quote_type = double
+
+# JSON files
+[*.json]
+indent_size = 2
+insert_spaces = true
+
+# C++ files
+[*.cpp]
+indent_size = 4
+indent_style = space
+max_line_length = 120
+charset = utf-8
+trim_trailing_whitespace = true
+
+[*.h]
+indent_size = 4
+indent_style = space
+max_line_length = 120
+charset = utf-8
+trim_trailing_whitespace = true
+
+# CMakeLists.txt (for CMake)
+[CMakeLists.txt]
+indent_size = 2
+indent_style = space
+max_line_length = 120
+
+# Add header to every file (plugin-specific setting)
+file_header_template = """
+/**
+ * @project MindLens
+ * @owner Andrii Volynets
+ * @license AGPLv3
+ */
+"""
