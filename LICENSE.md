@@ -1,3 +1,16 @@
+# License: GNU Affero General Public License v3.0 Entiere
+
+MINDLENS is licensed under the GNU AGPLv3.
+
+You are free to:
+
+- Use the software for any purpose
+- Study how it works and adapt it
+- Share it with others
+- Modify it and contribute changes
+
+**However**, if you **run** a modified version of MINDLENS over a **network** (SaaS, cloud, IDE service), you **must make the source code of that version public** under the same license.
+
 # GNU AFFERO GENERAL PUBLIC LICENSE
 
 Version 3, 19 November 2007

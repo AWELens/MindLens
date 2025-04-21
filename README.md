@@ -65,7 +65,7 @@ This project is licensed under the MIT License. See [LICENSE.md](LICENSE.md) for
 
 ## 👨‍💻 Contributing
 
-We welcome contributions from anyone interested in improving the project! If you'd like to contribute to the development of MindLens, please check out our [contributing guidelines](CONTRIBUTING.md).
+We welcome contributions from anyone interested in improving the project! If you'd like to contribute to the development of MindLens, please check out our [contributing guidelines](docs/CONTRIBUTING.md).
 
 ---
 

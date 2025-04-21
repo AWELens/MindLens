@@ -6,6 +6,7 @@
 *.swo
 *.DS_Store
 Thumbs.db
+plan/
 
 # === Compiled binaries ===
 /build/
@@ -80,8 +81,8 @@ __pycache__/
 /*.gcov
 
 # === AGPL License Metadata (если есть генераторы) ===
-LICENSE*
-COPYING*
+LICENSE_METADATA*
+COPYING_METADATA*
 
 # === Optional: Custom tools ===
 /tools/generated/
