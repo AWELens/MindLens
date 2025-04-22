@@ -1,0 +1,13 @@
+{
+  "name": "mindlens",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm --filter frontend dev",
+    "build": "pnpm --filter frontend build"
+  },
+  "devDependencies": {}
+}

@@ -133,3 +133,9 @@ For specific legal inquiries, please contact:
 - General licensing: licensing@mindlens.dev
 - Commercial inquiries: commercial@mindlens.dev
 - IP concerns: legal@mindlens.dev
+
+[UseCaseNode] 
+  → [core:graph-validator] 
+    → [plugin:codegen.typescript] 
+      → [plugin:compile.wasm]
+        → [plugin:runtime-executor]
