@@ -5,7 +5,6 @@ import checker from "vite-plugin-checker";
 
 const host = process.env.TAURI_DEV_HOST;
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react({
@@ -15,7 +14,7 @@ export default defineConfig({
     checker({
       typescript: true,
       eslint: {
-        lintCommand: "eslint src/**/*.{ts,tsx}",
+        lintCommand: 'eslint "./src/**/*.{ts,tsx}"',
       },
     }),
   ],

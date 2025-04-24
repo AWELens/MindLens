@@ -1,10 +1,5 @@
 function App() {
-
-  return (
-    <>
-     
-    </>
-  )
+  return <>Tauri</>;
 }
 
-export default App
+export default App;

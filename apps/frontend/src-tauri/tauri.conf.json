@@ -5,11 +5,12 @@
   "identifier": "com.tauri.dev",
   "build": {
     "frontendDist": "../build",
-    "devUrl": "http://localhost:5000",
+    "devUrl": "http://localhost:1420",
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "MindLens",

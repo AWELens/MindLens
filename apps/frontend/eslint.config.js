@@ -1,28 +1,61 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
+// eslint.config.js
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import reactPlugin from "eslint-plugin-react";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
+import prettierPlugin from "eslint-plugin-prettier";
+import importPlugin from "eslint-plugin-import";
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+export default [
+  js.configs.recommended,
+
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
+    ignores: ["**/dist/**", "**/build/**", "**/node_modules/**", "**/.vite/**", "**/*.config.js"],
+  },
+
+  // TypeScript + React support
+  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  {
+    files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      parser: tseslint.parser,
+      parserOptions: {
+        project: ["./tsconfig.eslint.json"],
+      },
     },
     plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      "@typescript-eslint": tseslint.plugin,
+      react: reactPlugin,
+      "react-hooks": reactHooksPlugin,
+      prettier: prettierPlugin,
+      import: importPlugin,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
+      // TypeScript
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/explicit-function-return-type": "off",
+
+      // React
+      "react/react-in-jsx-scope": "off", // для React 17+
+      "react/jsx-uses-react": "off",
+      "react/prop-types": "off",
+
+      // React Hooks
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+
+      // Import
+      "import/order": [
+        "warn",
+        {
+          groups: [["builtin", "external"], "internal", ["parent", "sibling", "index"]],
+          "newlines-between": "always",
+        },
       ],
+
+      // Prettier
+      "prettier/prettier": "warn",
     },
   },
-)
+];
