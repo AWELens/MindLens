@@ -59,7 +59,7 @@ _"Architecture in your hands. Code you can see. Thoughts you design."_
 
 ## 📜 License
 
-This project is licensed under the MIT License. See [LICENSE.md](LICENSE.md) for details.
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0) for open source use. For commercial use and proprietary applications, a commercial license is available. See [LICENSE.md](LICENSE.md) for the full AGPL license text and [docs/LICENSES/COMMERCIAL.md](docs/LICENSES/COMMERCIAL.md) for commercial licensing options.
 
 ---
 
