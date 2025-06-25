@@ -1,16 +1,21 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import React from "react";
+
 import App from "./App";
 
-const root = document.getElementById("root");
+const isDev = process.env.NODE_ENV !== "production";
 
-if (root) {
-  const rootNode = createRoot(root);
+const rootElement = document.getElementById("entrypoint");
+if (!rootElement) throw new Error("Root element not found");
 
-  rootNode.render(
-    <StrictMode>
+const root = createRoot(rootElement);
+
+root.render(
+  isDev ? (
+    <React.StrictMode>
       <App />
-    </StrictMode>
-  );
-
-}
+    </React.StrictMode>
+  ) : (
+    <App />
+  ),
+);

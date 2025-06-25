@@ -86,3 +86,4 @@ COPYING_METADATA*
 
 # === Optional: Custom tools ===
 /tools/generated/
+/personal/
