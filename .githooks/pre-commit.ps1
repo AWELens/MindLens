@@ -108,7 +108,7 @@ function Update-Header {
     if (Test-HasHeader -FilePath $FilePath) {
         # Update existing header
         $pattern = '(?s)(\/\*\*.*?\*\/|""".*?"""|\/\*.*?\*\/)'
-        $content = $content -replace $pattern, $newHeader, 1
+        $content = [regex]::Replace($content, $pattern, $newHeader, [System.Text.RegularExpressions.RegexOptions]::None)
     } else {
         # Add new header
         $content = $newHeader + "`n`n" + $content
