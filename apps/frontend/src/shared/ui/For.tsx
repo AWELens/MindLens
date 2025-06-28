@@ -1,13 +1,13 @@
 /**
  * @author Andrii Volynets
  * @project MidnLens
- * @license APGL 
+ * @license APGL
  * @version 1.0.0
  * @file For.tsx
  * @module shared/ui/For
  * @since 1.0.0
  * @date 2025-06-28
- * © 2025 Андрей. Все права защищены.
+  
  */
 
 import React, { memo, useMemo } from "react";
