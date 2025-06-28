@@ -1,3 +1,15 @@
+/**
+ * @author Andrii Volynets
+ * @project MidnLens
+ * @license APGL 
+ * @version 1.0.0
+ * @file For.tsx
+ * @module shared/ui/For
+ * @since 1.0.0
+ * @date 2025-06-28
+ * © 2025 Андрей. Все права защищены.
+ */
+
 import React, { memo, useMemo } from "react";
 
 /**
@@ -5,14 +17,15 @@ import React, { memo, useMemo } from "react";
  *
  * @template T - The type of items in the `each` array.
  */
-export interface ForProps<T> {
+interface ForProps<T = unknown> {
   /**
    * An array of items to iterate over.
    */
-  each: T[];
+  each: T[] | null | undefined;
 
   /**
    * A function that receives an item and its index, and returns a React node.
+   * Must be memoized (e.g., with useCallback) to prevent unnecessary re-renders.
    * @param item - The current item from the `each` array.
    * @param index - The index of the current item.
    * @returns A React node representing the item.
@@ -21,39 +34,52 @@ export interface ForProps<T> {
 
   /**
    * A function that returns a unique, stable key for the given item.
+   * Must be memoized (e.g., with useCallback) to prevent unnecessary re-renders.
    * @param item - The current item from the `each` array.
    * @param index - The index of the current item.
    * @returns A unique key used by React for optimal reconciliation.
    */
-  getKey: (item: T, index: number) => React.Key;
+  getKey: (item: T, index: number) => string | number;
+
+  /**
+   * Optional fallback to render when `each` is empty or null/undefined.
+   */
+  fallback?: React.ReactNode;
 }
 
 /**
- * Generic, memoized list rendering component that provides fine-grained
- * control over rendering with custom key extraction and avoids unnecessary
- * recomputation via useMemo and React.memo.
- *
- * Optimized for large lists and nested structures.
+ * Generic, memoized list rendering component for efficient iteration over arrays.
+ * Optimized for large lists with custom key extraction and fallback support.
  *
  * @example
  * ```tsx
- * <For each={users} getKey={(user) => user.id}>
- *   {(user) => <UserCard user={user} />}
+ * const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
+ * const getKey = useCallback((user) => user.id, []);
+ * const renderUser = useCallback((user) => <div>{user.name}</div>, []);
+ *
+ * <For each={users} getKey={getKey} fallback={<div>No users found</div>}>
+ *   {renderUser}
  * </For>
  * ```
  *
  * @template T - The type of data to iterate.
  */
-function ForInner<T>({ each, children, getKey }: ForProps<T>) {
+const For: React.FC<ForProps> = memo(<T,>({ each, children, getKey, fallback }: ForProps<T>) => {
   const renderedItems = useMemo(() => {
-    return each.map((item, index) => (
-      <React.Fragment key={getKey(item, index)}>{children(item, index)}</React.Fragment>
-    ));
-  }, [each, children, getKey]);
+    if (!each || each.length === 0) {
+      return fallback ?? null;
+    }
+
+    return each.map((item, index) => {
+      const key = getKey(item, index);
+
+      return <React.Fragment key={key}>{children(item, index)}</React.Fragment>;
+    });
+  }, [each, fallback, children, getKey]);
 
   return <>{renderedItems}</>;
-}
+});
 
-ForInner.displayName = "For";
+For.displayName = "For";
 
-export default memo(ForInner) as typeof ForInner;
+export default For;

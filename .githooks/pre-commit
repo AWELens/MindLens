@@ -1,0 +1,165 @@
+#!/bin/bash
+
+# Pre-commit hook for adding file headers
+# Automatically detects operating system and runs appropriate script
+
+# Check operating system
+if [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]] || [[ -n "$WINDIR" ]]; then
+    # Windows - run PowerShell script
+    powershell.exe -ExecutionPolicy Bypass -File "$(dirname "$0")/pre-commit.ps1"
+    exit $?
+fi
+
+# Function to get current date in required format
+get_current_date() {
+    date +"%Y-%m-%d"
+}
+
+# Function to get version from package.json
+get_version() {
+    if [ -f "package.json" ]; then
+        grep '"version"' package.json | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d ' '
+    else
+        echo "1.0.0"
+    fi
+}
+
+# Function to get project name from package.json
+get_project_name() {
+    if [ -f "package.json" ]; then
+        grep '"name"' package.json | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d ' '
+    else
+        echo "MindLens"
+    fi
+}
+
+# Function to create file header
+create_header() {
+    local file="$1"
+    local filename=$(basename "$file")
+    local relative_path=$(echo "$file" | sed 's|^./||' | sed 's|^apps/frontend/src/||')
+    local module_path=$(dirname "$relative_path" | sed 's|/|/|g')
+    local current_date=$(get_current_date)
+    local version=$(get_version)
+    local project_name=$(get_project_name)
+    
+    # Determine comment type by file extension
+    local comment_start=""
+    local comment_line=""
+    local comment_end=""
+    
+    case "${filename##*.}" in
+        ts|tsx|js|jsx)
+            comment_start="/**"
+            comment_line=" *"
+            comment_end=" */"
+            ;;
+        py)
+            comment_start='"""'
+            comment_line=""
+            comment_end='"""'
+            ;;
+        rs)
+            comment_start="/*"
+            comment_line=" *"
+            comment_end=" */"
+            ;;
+        *)
+            return 0  # Skip unsupported file types
+            ;;
+    esac
+    
+    # Create header
+    if [ "${filename##*.}" = "py" ]; then
+        cat << EOF
+$comment_start
+@author Andrii Volynets
+@project $project_name
+@license APGL
+@version $version
+@file $filename
+@module $module_path
+@since $version
+@date $current_date
+$comment_end
+EOF
+    else
+        cat << EOF
+$comment_start
+$comment_line @author Andrii Volynets
+$comment_line @project $project_name
+$comment_line @license APGL
+$comment_line @version $version
+$comment_line @file $filename
+$comment_line @module $module_path
+$comment_line @since $version
+$comment_line @date $current_date
+$comment_end
+EOF
+    fi
+}
+
+# Function to check if header exists
+has_header() {
+    local file="$1"
+    head -15 "$file" | grep -q "@author Andrii Volynets"
+}
+
+# Function to update header
+update_header() {
+    local file="$1"
+    local temp_file=$(mktemp)
+    local new_header=$(create_header "$file")
+    local current_date=$(get_current_date)
+    
+    # If header already exists, update date
+    if has_header "$file"; then
+        # Find end of existing header and replace it
+        awk -v header="$new_header" -v date="$current_date" '
+        BEGIN { in_header = 0; header_ended = 0 }
+        /^\/\*\*/ || /^"""/ || /^\/\*/ { 
+            if (!header_ended) {
+                in_header = 1
+                print header
+            }
+        }
+        /\*\// || /"""$/ { 
+            if (in_header && !header_ended) {
+                in_header = 0
+                header_ended = 1
+                next
+            }
+        }
+        {
+            if (!in_header || header_ended) {
+                print
+            }
+        }' "$file" > "$temp_file"
+    else
+        # Add new header to beginning of file
+        echo "$new_header" > "$temp_file"
+        echo "" >> "$temp_file"
+        cat "$file" >> "$temp_file"
+    fi
+    
+    mv "$temp_file" "$file"
+}
+
+# Get list of files to be committed
+staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Process each file
+for file in $staged_files; do
+    # Check that file exists and is source code
+    if [ -f "$file" ]; then
+        case "${file##*.}" in
+            ts|tsx|js|jsx|py|rs)
+                echo "Updating header in file: $file"
+                update_header "$file"
+                git add "$file"
+                ;;
+        esac
+    fi
+done
+
+exit 0
