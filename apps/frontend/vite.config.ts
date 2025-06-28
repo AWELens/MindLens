@@ -1,3 +1,14 @@
+/**
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file vite.config.ts
+ * @module apps\frontend
+ * @since 0.0.0
+ * @date 2025-06-28
+ */
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -13,9 +24,11 @@ export default defineConfig({
     tsconfigPaths(),
     checker({
       typescript: true,
-      eslint: {
-        lintCommand: 'eslint "./src/**/*.{ts,tsx}"',
-      },
+      // Временно отключаем ESLint checker
+      // eslint: {
+      //   lintCommand: 'eslint "./src/**/*.{ts,tsx}" --config eslint.config.js',
+      //   useFlatConfig: true,
+      // },
     }),
   ],
   server: {

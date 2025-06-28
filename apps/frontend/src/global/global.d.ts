@@ -1,3 +1,14 @@
+/**
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file global.d.ts
+ * @module global
+ * @since 0.0.0
+ * @date 2025-06-28
+ */
+
 declare global {
   interface Window {
     // Tauri API

@@ -9,60 +9,77 @@
  * @date 2025-06-28
  */
 
-
 import React, { memo, useMemo } from "react";
 
 /**
- * Props for the generic `For` component.
- *
- * @template T - The type of items in the `each` array.
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file For.tsx
+ * @module shared\ui
+ * @since 0.0.0
+ * @date 2025-06-28
  */
 interface ForProps<T = unknown> {
   /**
-   * An array of items to iterate over.
-   */
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file For.tsx
+ * @module shared\ui
+ * @since 0.0.0
+ * @date 2025-06-28
+ */
   each: T[] | null | undefined;
 
   /**
-   * A function that receives an item and its index, and returns a React node.
-   * Must be memoized (e.g., with useCallback) to prevent unnecessary re-renders.
-   * @param item - The current item from the `each` array.
-   * @param index - The index of the current item.
-   * @returns A React node representing the item.
-   */
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file For.tsx
+ * @module shared\ui
+ * @since 0.0.0
+ * @date 2025-06-28
+ */
   children: (item: T, index: number) => React.ReactNode;
 
   /**
-   * A function that returns a unique, stable key for the given item.
-   * Must be memoized (e.g., with useCallback) to prevent unnecessary re-renders.
-   * @param item - The current item from the `each` array.
-   * @param index - The index of the current item.
-   * @returns A unique key used by React for optimal reconciliation.
-   */
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file For.tsx
+ * @module shared\ui
+ * @since 0.0.0
+ * @date 2025-06-28
+ */
   getKey: (item: T, index: number) => string | number;
 
   /**
-   * Optional fallback to render when `each` is empty or null/undefined.
-   */
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file For.tsx
+ * @module shared\ui
+ * @since 0.0.0
+ * @date 2025-06-28
+ */
   fallback?: React.ReactNode;
 }
 
 /**
- * Generic, memoized list rendering component for efficient iteration over arrays.
- * Optimized for large lists with custom key extraction and fallback support.
- *
- * @example
- * ```tsx
- * const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
- * const getKey = useCallback((user) => user.id, []);
- * const renderUser = useCallback((user) => <div>{user.name}</div>, []);
- *
- * <For each={users} getKey={getKey} fallback={<div>No users found</div>}>
- *   {renderUser}
- * </For>
- * ```
- *
- * @template T - The type of data to iterate.
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file For.tsx
+ * @module shared\ui
+ * @since 0.0.0
+ * @date 2025-06-28
  */
 const For: React.FC<ForProps> = memo(<T,>({ each, children, getKey, fallback }: ForProps<T>) => {
   const renderedItems = useMemo(() => {
