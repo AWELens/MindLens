@@ -1,14 +1,14 @@
 /**
  * @author Andrii Volynets
- * @project MidnLens
+ * @project mindlens
  * @license APGL
- * @version 1.0.0
+ * @version 0.0.0
  * @file For.tsx
- * @module shared/ui/For
- * @since 1.0.0
+ * @module shared\ui
+ * @since 0.0.0
  * @date 2025-06-28
-  
  */
+
 
 import React, { memo, useMemo } from "react";
 
