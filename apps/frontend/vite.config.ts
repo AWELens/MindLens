@@ -6,7 +6,7 @@
  * @file vite.config.ts
  * @module apps\frontend
  * @since 0.0.0
- * @date 2025-06-28
+ * @date 2025-06-29
  */
 
 import { defineConfig } from "vite";
@@ -24,26 +24,27 @@ export default defineConfig({
     tsconfigPaths(),
     checker({
       typescript: true,
-      // Временно отключаем ESLint checker
+      // ESLint checker temporarily disabled
       // eslint: {
-      //   lintCommand: 'eslint "./src/**/*.{ts,tsx}" --config eslint.config.js',
-      //   useFlatConfig: true,
-      // },
-    }),
-  ],
-  server: {
-    port: 1420,
-    strictPort: true,
-    host: host || "localhost",
-    hmr: host
-      ? {
-          protocol: "ws",
-          host,
-          port: 1421,
-        }
-      : true,
-    watch: {
-      ignored: ["**/src-tauri/**", "**/target/**"],
+      //   lintCommand: 'eslint "./src/**
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file vite.config.ts
+ * @module apps\frontend
+ * @since 0.0.0
+ * @date 2025-06-29
+ */target/**
+ * @author Andrii Volynets
+ * @project mindlens
+ * @license APGL
+ * @version 0.0.0
+ * @file vite.config.ts
+ * @module apps\frontend
+ * @since 0.0.0
+ * @date 2025-06-29
+ */node_modules/**"],
     },
   },
   envPrefix: ["VITE_", "TAURI_"],

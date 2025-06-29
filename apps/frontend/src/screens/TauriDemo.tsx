@@ -6,7 +6,7 @@
  * @file TauriDemo.tsx
  * @module screens
  * @since 0.0.0
- * @date 2025-06-28
+ * @date 2025-06-29
  */
 
 import React, { useState } from "react";
@@ -20,26 +20,15 @@ import {
   systemCommands,
 } from "../lib/tauri";
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file TauriDemo.tsx
- * @module screens
- * @since 0.0.0
- * @date 2025-06-28
- */
 const TauriDemo: React.FC = () => {
   const [message, setMessage] = useState("");
 
-  // Хуки для различных функций Tauri
+  // Хуки для різних функцій Tauri
   const { systemInfo, loading: systemLoading, error: systemError } = useSystemInfo();
   const { settings, loading: settingsLoading, saveSettings } = useAppSettings();
   const { showMessage, showConfirm } = useDialogs();
   const { readFile, writeFile } = useFileOperations();
 
-  // Команда для получения версии приложения
   const {
     execute: getVersion,
     loading: versionLoading,
@@ -48,29 +37,29 @@ const TauriDemo: React.FC = () => {
 
   const handleShowMessage = async () => {
     if (message.trim()) {
-      await showMessage.execute("Tauri Demo", message);
+      await showMessage.execute("Демонстрація Tauri", message);
       setMessage("");
     }
   };
 
   const handleShowConfirm = async () => {
-    const result = await showConfirm.execute("Подтверждение", "Вы уверены?");
+    const result = await showConfirm.execute("Підтвердження", "Ви впевнені?");
     if (result.success && result.data) {
-      await showMessage.execute("Результат", "Вы нажали OK");
+      await showMessage.execute("Результат", "Ви натиснули OK");
     } else if (result.success) {
-      await showMessage.execute("Результат", "Вы нажали Cancel");
+      await showMessage.execute("Результат", "Ви натиснули Скасувати");
     }
   };
 
   const handleFileWrite = async () => {
-    const content = `Тест записи файла\nВремя: ${new Date().toISOString()}\n`;
+    const content = `Тест запису файлу\nЧас: ${new Date().toISOString()}\n`;
     await writeFile.execute("test.txt", content);
   };
 
   const handleFileRead = async () => {
     const result = await readFile.execute("test.txt");
     if (result.success) {
-      await showMessage.execute("Содержимое файла", result.data || "Файл пуст");
+      await showMessage.execute("Вміст файлу", result.data || "Файл порожній");
     }
   };
 
@@ -85,80 +74,50 @@ const TauriDemo: React.FC = () => {
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Tauri Demo</h1>
+      <h1>Демонстрація Tauri</h1>
 
-      {/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file TauriDemo.tsx
- * @module screens
- * @since 0.0.0
- * @date 2025-06-28
- */}
       <section style={{ marginBottom: "20px" }}>
-        <h2>Системная информация</h2>
-        {systemLoading && <p>Загрузка...</p>}
-        {systemError && <p style={{ color: "red" }}>Ошибка: {systemError}</p>}
+        <h2>Системна інформація</h2>
+        {systemLoading && <p>Завантаження...</p>}
+        {systemError && <p style={{ color: "red" }}>Помилка: {systemError}</p>}
         {systemInfo && (
           <div>
             <p>
               <strong>Платформа:</strong> {systemInfo.platform}
             </p>
             <p>
-              <strong>Архитектура:</strong> {systemInfo.arch}
+              <strong>Архітектура:</strong> {systemInfo.arch}
             </p>
             <p>
-              <strong>Версия ОС:</strong> {systemInfo.version}
+              <strong>Версія ОС:</strong> {systemInfo.version}
             </p>
             <p>
-              <strong>Имя хоста:</strong> {systemInfo.hostname}
+              <strong>Ім'я хоста:</strong> {systemInfo.hostname}
             </p>
           </div>
         )}
       </section>
 
-      {/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file TauriDemo.tsx
- * @module screens
- * @since 0.0.0
- * @date 2025-06-28
- */}
       <section style={{ marginBottom: "20px" }}>
-        <h2>Версия приложения</h2>
+        <h2>Версія застосунку</h2>
         <button
           type="button"
           onClick={() => void getVersion()}
           disabled={versionLoading}
           style={{ padding: "8px 16px", marginRight: "10px" }}
         >
-          {versionLoading ? "Загрузка..." : "Получить версию"}
+          {versionLoading ? "Завантаження..." : "Отримати версію"}
         </button>
-        {version && <span>Версия: {version}</span>}
+        {version && <span>Версія: {version}</span>}
       </section>
 
-      {/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file TauriDemo.tsx
- * @module screens
- * @since 0.0.0
- * @date 2025-06-28
- */}
       <section style={{ marginBottom: "20px" }}>
-        <h2>Диалоги</h2>
+        <h2>Діалоги</h2>
         <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Введите сообщение"
+          placeholder="Введіть повідомлення"
           style={{ padding: "8px", marginRight: "10px", width: "200px" }}
         />
         <button
@@ -167,7 +126,7 @@ const TauriDemo: React.FC = () => {
           disabled={showMessage.loading}
           style={{ padding: "8px 16px", marginRight: "10px" }}
         >
-          {showMessage.loading ? "Загрузка..." : "Показать сообщение"}
+          {showMessage.loading ? "Завантаження..." : "Показати повідомлення"}
         </button>
         <button
           type="button"
@@ -175,29 +134,19 @@ const TauriDemo: React.FC = () => {
           disabled={showConfirm.loading}
           style={{ padding: "8px 16px" }}
         >
-          {showConfirm.loading ? "Загрузка..." : "Показать подтверждение"}
+          {showConfirm.loading ? "Завантаження..." : "Показати підтвердження"}
         </button>
       </section>
 
-      {/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file TauriDemo.tsx
- * @module screens
- * @since 0.0.0
- * @date 2025-06-28
- */}
       <section style={{ marginBottom: "20px" }}>
-        <h2>Файловые операции</h2>
+        <h2>Файлові операції</h2>
         <button
           type="button"
           onClick={() => void handleFileWrite()}
           disabled={writeFile.loading}
           style={{ padding: "8px 16px", marginRight: "10px" }}
         >
-          {writeFile.loading ? "Записываю..." : "Записать файл"}
+          {writeFile.loading ? "Запис..." : "Записати файл"}
         </button>
         <button
           type="button"
@@ -205,29 +154,19 @@ const TauriDemo: React.FC = () => {
           disabled={readFile.loading}
           style={{ padding: "8px 16px" }}
         >
-          {readFile.loading ? "Читаю..." : "Прочитать файл"}
+          {readFile.loading ? "Читання..." : "Прочитати файл"}
         </button>
-        {writeFile.error && <p style={{ color: "red" }}>Ошибка записи: {writeFile.error}</p>}
-        {readFile.error && <p style={{ color: "red" }}>Ошибка чтения: {readFile.error}</p>}
+        {writeFile.error && <p style={{ color: "red" }}>Помилка запису: {writeFile.error}</p>}
+        {readFile.error && <p style={{ color: "red" }}>Помилка читання: {readFile.error}</p>}
       </section>
 
-      {/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file TauriDemo.tsx
- * @module screens
- * @since 0.0.0
- * @date 2025-06-28
- */}
       <section style={{ marginBottom: "20px" }}>
-        <h2>Настройки приложения</h2>
-        {settingsLoading && <p>Загрузка настроек...</p>}
+        <h2>Налаштування застосунку</h2>
+        {settingsLoading && <p>Завантаження налаштувань...</p>}
         {settings && (
           <div>
             <p>
-              <strong>Текущая тема:</strong> {settings.theme}
+              <strong>Поточна тема:</strong> {settings.theme}
             </p>
             <div>
               <button
@@ -235,21 +174,21 @@ const TauriDemo: React.FC = () => {
                 onClick={() => void handleThemeChange("light")}
                 style={{ padding: "8px 16px", marginRight: "10px" }}
               >
-                Светлая
+                Світла
               </button>
               <button
                 type="button"
                 onClick={() => void handleThemeChange("dark")}
                 style={{ padding: "8px 16px", marginRight: "10px" }}
               >
-                Темная
+                Темна
               </button>
               <button
                 type="button"
                 onClick={() => void handleThemeChange("system")}
                 style={{ padding: "8px 16px" }}
               >
-                Системная
+                Системна
               </button>
             </div>
           </div>

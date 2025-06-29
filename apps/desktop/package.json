@@ -1,0 +1,15 @@
+{
+  "name": "@mindlens/desktop",
+  "version": "0.1.0",
+  "description": "MindLens Desktop Application",
+  "private": true,
+  "scripts": {
+    "dev": "tauri dev --config tauri.dev.conf.json",
+    "dev:hot": "tauri dev --config tauri.dev.conf.json --no-watch",
+    "build": "tauri build",
+    "clean": "cargo clean"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.5.0"
+  }
+}
