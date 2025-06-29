@@ -9,10 +9,8 @@
  * @date 2025-06-28
  */
 
-// Экспорт типов
 export type * from "./types";
 
-// Экспорт команд
 export {
   dialogCommands,
   fileCommands,
@@ -22,7 +20,6 @@ export {
   systemCommands,
 } from "./commands";
 
-// Экспорт хуков
 export {
   useAppSettings,
   useAsyncCommand,

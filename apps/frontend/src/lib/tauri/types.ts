@@ -1,40 +1,13 @@
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file types.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file types.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
+
+
 export interface TauriResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file types.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
+
 export interface SystemInfo {
   platform: string;
   arch: string;
@@ -42,16 +15,7 @@ export interface SystemInfo {
   hostname: string;
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file types.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
+
 export interface FileInfo {
   name: string;
   path: string;
@@ -61,32 +25,14 @@ export interface FileInfo {
   modified: string;
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file types.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
+
 export interface NotificationOptions {
   title: string;
   body?: string;
   icon?: string;
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file types.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
+
 export interface DialogOptions {
   title?: string;
   defaultPath?: string;
@@ -98,16 +44,7 @@ export interface FileFilter {
   extensions: string[];
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file types.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
+
 export interface AppSettings {
   theme: "light" | "dark" | "system";
   language: string;
@@ -115,16 +52,7 @@ export interface AppSettings {
   notifications: boolean;
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file types.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
+
 export interface TauriEvent<T = unknown> {
   event: string;
   payload: T;
@@ -132,16 +60,7 @@ export interface TauriEvent<T = unknown> {
   windowLabel: string;
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file types.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
+
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error";
 
 export interface LogEntry {

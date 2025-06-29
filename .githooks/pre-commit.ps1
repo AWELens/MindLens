@@ -88,12 +88,15 @@ function Create-Header {
     }
 }
 
-# Function to check if header exists
+# Function to check if header exists at the beginning of file
 function Test-HasHeader {
     param([string]$FilePath)
     
     $content = Get-Content $FilePath -Head 15 -ErrorAction SilentlyContinue
-    return ($content -join "`n") -match "@author Andrii Volynets"
+    if ($content) {
+        return ($content -join "`n") -match "@author Andrii Volynets"
+    }
+    return $false
 }
 
 # Function to update header
@@ -103,33 +106,47 @@ function Update-Header {
     $newHeader = Create-Header -FilePath $FilePath
     if (-not $newHeader) { return }
     
-    $content = Get-Content $FilePath -Raw
+    $content = Get-Content $FilePath -Raw -ErrorAction SilentlyContinue
+    if (-not $content) { return }
     
-    if (Test-HasHeader -FilePath $FilePath) {
-        # Update existing header
-        $pattern = '(?s)(\/\*\*.*?\*\/|""".*?"""|\/\*.*?\*\/)'
-        $content = [regex]::Replace($content, $pattern, $newHeader, [System.Text.RegularExpressions.RegexOptions]::None)
-    } else {
-        # Add new header
-        $content = $newHeader + "`n`n" + $content
-    }
+    # Remove all existing headers (including duplicates)
+    # JSDoc style headers
+    $content = [regex]::Replace($content, '(?s)/\*\*[^*]*\*[^*]*@author Andrii Volynets.*?\*/', '', [System.Text.RegularExpressions.RegexOptions]::Multiline)
     
-    Set-Content -Path $FilePath -Value $content -NoNewline
+    # Python style headers
+    $content = [regex]::Replace($content, '(?s)"""[^"]*@author Andrii Volynets.*?"""', '', [System.Text.RegularExpressions.RegexOptions]::Multiline)
+    
+    # C style headers
+    $content = [regex]::Replace($content, '(?s)/\*[^*]*\*[^*]*@author Andrii Volynets.*?\*/', '', [System.Text.RegularExpressions.RegexOptions]::Multiline)
+    
+    # Clean up extra newlines at the beginning
+    $content = $content -replace '^\s*\n+', ''
+    
+    # Add new header at the beginning
+    $content = $newHeader + "`n`n" + $content
+    
+    Set-Content -Path $FilePath -Value $content -NoNewline -ErrorAction SilentlyContinue
 }
 
 # Get list of staged files
-$stagedFiles = & git diff --cached --name-only --diff-filter=ACM
-
-foreach ($file in $stagedFiles) {
-    if (Test-Path $file) {
-        $extension = [System.IO.Path]::GetExtension($file).TrimStart('.')
-        
-        if ($extension -in @('ts', 'tsx', 'js', 'jsx', 'py', 'rs')) {
-            Write-Host "Updating header in file: $file"
-            Update-Header -FilePath $file
-            & git add $file
+try {
+    $stagedFiles = & git diff --cached --name-only --diff-filter=ACM
+    
+    foreach ($file in $stagedFiles) {
+        if (Test-Path $file) {
+            $extension = [System.IO.Path]::GetExtension($file).TrimStart('.')
+            
+            if ($extension -in @('ts', 'tsx', 'js', 'jsx', 'py', 'rs')) {
+                Write-Host "Updating header in file: $file"
+                Update-Header -FilePath $file
+                & git add $file
+            }
         }
     }
+}
+catch {
+    Write-Host "Error in pre-commit hook: $_"
+    exit 1
 }
 
 exit 0
