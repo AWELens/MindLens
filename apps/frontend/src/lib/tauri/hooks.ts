@@ -22,16 +22,6 @@ import {
   systemCommands,
 } from "./commands";
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file hooks.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
 export function useAsyncCommand<T, A extends unknown[] = []>(
   command: (...args: A) => Promise<TauriResponse<T>>,
 ) {
@@ -74,16 +64,6 @@ export function useAsyncCommand<T, A extends unknown[] = []>(
   return { execute, loading, error, data, reset };
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file hooks.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
 export function useSystemInfo() {
   const [systemInfo, setSystemInfo] = useState<SystemInfo | null>(null);
   const [loading, setLoading] = useState(false);
@@ -111,16 +91,6 @@ export function useSystemInfo() {
   return { systemInfo, loading, error, refresh: refreshSystemInfo };
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file hooks.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
 export function useAppSettings() {
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [loading, setLoading] = useState(false);
@@ -187,16 +157,6 @@ export function useAppSettings() {
   };
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file hooks.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
 export function useTauriEvent<T = unknown>(eventName: string) {
   const [lastEvent, setLastEvent] = useState<TauriEvent<T> | null>(null);
   const [events, setEvents] = useState<TauriEvent<T>[]>([]);
@@ -227,16 +187,6 @@ export function useTauriEvent<T = unknown>(eventName: string) {
   return { lastEvent, events, clearEvents };
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file hooks.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
 export function useFileOperations() {
   const readFile = useAsyncCommand(fileCommands.readTextFile);
   const writeFile = useAsyncCommand(fileCommands.writeTextFile);
@@ -255,16 +205,6 @@ export function useFileOperations() {
   };
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file hooks.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
 export function useDialogs() {
   const showSaveDialog = useAsyncCommand(dialogCommands.showSaveDialog);
   const showOpenDialog = useAsyncCommand(dialogCommands.showOpenDialog);
@@ -279,16 +219,6 @@ export function useDialogs() {
   };
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file hooks.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
 export function useNotifications() {
   const showNotification = useAsyncCommand(notificationCommands.showNotification);
   const checkPermission = useAsyncCommand(notificationCommands.checkNotificationPermission);
@@ -301,16 +231,6 @@ export function useNotifications() {
   };
 }
 
-/**
- * @author Andrii Volynets
- * @project mindlens
- * @license APGL
- * @version 0.0.0
- * @file hooks.ts
- * @module lib\tauri
- * @since 0.0.0
- * @date 2025-06-28
- */
 export function useLogging() {
   const writeLog = useAsyncCommand(logCommands.writeLog);
   const getLogs = useAsyncCommand(logCommands.getLogs);
