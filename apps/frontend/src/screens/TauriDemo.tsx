@@ -23,7 +23,6 @@ import {
 const TauriDemo: React.FC = () => {
   const [message, setMessage] = useState("");
 
-  // Хуки для різних функцій Tauri
   const { systemInfo, loading: systemLoading, error: systemError } = useSystemInfo();
   const { settings, loading: settingsLoading, saveSettings } = useAppSettings();
   const { showMessage, showConfirm } = useDialogs();
