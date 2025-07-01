@@ -5,161 +5,84 @@
 
 # Check operating system
 if [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]] || [[ -n "$WINDIR" ]]; then
-    # Windows - run PowerShell script
     powershell.exe -ExecutionPolicy Bypass -File "$(dirname "$0")/pre-commit.ps1"
     exit $?
 fi
 
-# Function to get current date in required format
-get_current_date() {
-    date +"%Y-%m-%d"
-}
-
-# Function to get version from package.json
-get_version() {
-    if [ -f "package.json" ]; then
-        grep '"version"' package.json | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d ' '
+# Cache package.json data
+read -r project_name version < <(
+    if [[ -f package.json ]]; then
+        jq -r '.name + " " + .version' package.json 2>/dev/null || 
+        echo "MindLens 1.0.0"
     else
-        echo "1.0.0"
+        echo "MindLens 1.0.0"
     fi
-}
+)
 
-# Function to get project name from package.json
-get_project_name() {
-    if [ -f "package.json" ]; then
-        grep '"name"' package.json | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d ' '
-    else
-        echo "MindLens"
-    fi
-}
+# Supported file extensions
+supported_extensions='ts|tsx|js|jsx|py|rs'
 
-# Function to create file header
+# Header templates
+declare -A header_templates=(
+    ["js|ts|tsx|jsx"]=$'/**\n * @author Andrii Volynets\n * @project {0}\n * @license APGL\n * @version {1}\n * @file {2}\n * @module {3}\n * @since {1}\n * @date {4}\n */'
+    ["py"]=$'"""\n@author Andrii Volynets\n@project {0}\n@license APGL\n@version {1}\n@file {2}\n@module {3}\n@since {1}\n@date {4}\n"""'
+    ["rs"]=$'/*\n * @author Andrii Volynets\n * @project {0}\n * @license APGL\n * @version {1}\n * @file {2}\n * @module {3}\n * @since {1}\n * @date {4}\n */'
+)
+
+# Function to create header
 create_header() {
-    local file="$1"
+    local file="$1" ext="${1##*.}"
     local filename=$(basename "$file")
-    local relative_path=$(echo "$file" | sed 's|^./||' | sed 's|^apps/frontend/src/||')
-    local module_path=$(dirname "$relative_path" | sed 's|/|/|g')
-    local current_date=$(get_current_date)
-    local version=$(get_version)
-    local project_name=$(get_project_name)
+    local module_path=$(echo "$file" | sed 's|^./||;s|^apps/frontend/src/||' | xargs dirname)
+    local current_date=$(date +"%Y-%m-%d")
     
-    # Determine comment type by file extension
-    local comment_start=""
-    local comment_line=""
-    local comment_end=""
-    
-    case "${filename##*.}" in
-        ts|tsx|js|jsx)
-            comment_start="/**"
-            comment_line=" *"
-            comment_end=" */"
-            ;;
-        py)
-            comment_start='"""'
-            comment_line=""
-            comment_end='"""'
-            ;;
-        rs)
-            comment_start="/*"
-            comment_line=" *"
-            comment_end=" */"
-            ;;
-        *)
-            return 0  # Skip unsupported file types
-            ;;
-    esac
-    
-    # Create header
-    if [ "${filename##*.}" = "py" ]; then
-        cat << EOF
-$comment_start
-@author Andrii Volynets
-@project $project_name
-@license APGL
-@version $version
-@file $filename
-@module $module_path
-@since $version
-@date $current_date
-$comment_end
-EOF
-    else
-        cat << EOF
-$comment_start
-$comment_line @author Andrii Volynets
-$comment_line @project $project_name
-$comment_line @license APGL
-$comment_line @version $version
-$comment_line @file $filename
-$comment_line @module $module_path
-$comment_line @since $version
-$comment_line @date $current_date
-$comment_end
-EOF
-    fi
+    for pattern in "${!header_templates[@]}"; do
+        if [[ $ext =~ $pattern ]]; then
+            printf "${header_templates[$pattern]}" "$project_name" "$version" "$filename" "$module_path" "$current_date"
+            return 0
+        fi
+    done
+    return 1
 }
 
 # Function to check if header exists
 has_header() {
-    local file="$1"
-    head -15 "$file" | grep -q "@author Andrii Volynets"
+    head -n 15 "$1" 2>/dev/null | grep -q "@author Andrii Volynets"
 }
 
 # Function to update header
 update_header() {
     local file="$1"
     local temp_file=$(mktemp)
-    local new_header=$(create_header "$file")
-    local current_date=$(get_current_date)
+    trap 'rm -f "$temp_file"' EXIT
     
-    # If header already exists, update date
+    local new_header=$(create_header "$file") || return
+    
     if has_header "$file"; then
-        # Find end of existing header and replace it
-        awk -v header="$new_header" -v date="$current_date" '
-        BEGIN { in_header = 0; header_ended = 0 }
-        /^\/\*\*/ || /^"""/ || /^\/\*/ { 
-            if (!header_ended) {
-                in_header = 1
-                print header
-            }
-        }
-        /\*\// || /"""$/ { 
-            if (in_header && !header_ended) {
-                in_header = 0
-                header_ended = 1
-                next
-            }
-        }
-        {
-            if (!in_header || header_ended) {
-                print
-            }
-        }' "$file" > "$temp_file"
+        # Remove existing header and clean up extra newlines
+        awk -v header="$new_header" '
+        BEGIN { in_header=0 }
+        /^\/\*\*|^"""/ { in_header=1; print header; next }
+        /\*\/$|^"""$/ { in_header=0; next }
+        !in_header { print }
+        ' "$file" | sed '/^$/N;/^\n$/D' > "$temp_file"
     else
-        # Add new header to beginning of file
-        echo "$new_header" > "$temp_file"
-        echo "" >> "$temp_file"
-        cat "$file" >> "$temp_file"
+        # Add new header
+        {
+            echo "$new_header"
+            echo
+            cat "$file"
+        } > "$temp_file"
     fi
     
     mv "$temp_file" "$file"
+    git add "$file"
+    echo "Updated header in: $file"
 }
 
-# Get list of files to be committed
-staged_files=$(git diff --cached --name-only --diff-filter=ACM)
-
-# Process each file
-for file in $staged_files; do
-    # Check that file exists and is source code
-    if [ -f "$file" ]; then
-        case "${file##*.}" in
-            ts|tsx|js|jsx|py|rs)
-                echo "Updating header in file: $file"
-                update_header "$file"
-                git add "$file"
-                ;;
-        esac
-    fi
-done
+# Process staged files
+while IFS= read -r file; do
+    [[ -f $file && $file =~ \.($supported_extensions)$ ]] && update_header "$file"
+done < <(git diff --cached --name-only --diff-filter=ACM)
 
 exit 0

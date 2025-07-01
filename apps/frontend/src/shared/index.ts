@@ -6,8 +6,7 @@
  * @file index.ts
  * @module shared
  * @since 0.0.0
- * @date 2025-06-28
+ * @date 2025-07-01
  */
 
-// ui level exports;
 export { default as For } from "./ui/For";
